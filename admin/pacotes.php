@@ -278,16 +278,11 @@ $pacotes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Atualizar todos os pacotes para não serem mais populares por padrão
 $stmt = $conn->prepare("UPDATE pacotes_wcoin SET mais_popular = 0 WHERE mais_popular IS NULL");
 $stmt->execute();
-?>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar Pacotes - Credits Zaidan</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
+$page_title = 'Gerenciar Pacotes';
+include '../includes/admin_header.php';
+?>
+<style>
         .admin-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -525,24 +520,6 @@ $stmt->execute();
             padding: 8px 16px;
         }
     </style>
-</head>
-<body class="dark-theme">
-    <header>
-        <nav>
-            <div class="logo">
-                <h1>Credits Zaidan</h1>
-            </div>
-            <div class="nav-links">
-                <a href="index.php">Dashboard</a>
-                <a href="transacoes.php">Transações</a>
-                <a href="usuarios.php">Usuários</a>
-                <a href="pacotes.php">Pacotes</a>
-                <a href="cupons.php">Cupons</a>
-                <a href="../index.php">Voltar ao Site</a>
-                <a href="../logout.php">Sair</a>
-            </div>
-        </nav>
-    </header>
 
     <main class="admin-container">
         <div class="admin-header">
@@ -667,9 +644,7 @@ $stmt->execute();
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2024 Credits Zaidan - Todos os direitos reservados</p>
-    </footer>
+<?php include '../includes/admin_footer.php'; ?>
 
     <script>
         function abrirModal(tipo, dados = null) {
@@ -724,5 +699,3 @@ $stmt->execute();
             }
         }
     </script>
-</body>
-</html> 

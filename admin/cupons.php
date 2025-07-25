@@ -65,16 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_status'])) {
 // Buscar todos os cupons
 $stmt = $conn->query("SELECT * FROM cupons ORDER BY data_criacao DESC");
 $cupons = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar Cupons - Credits Zaidan</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
+$page_title = 'Gerenciar Cupons';
+include '../includes/admin_header.php';
+?>
+<style>
         .cupom-form {
             max-width: 600px;
             margin: 20px auto;
@@ -121,23 +116,6 @@ $cupons = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     </style>
 </head>
-<body class="dark-theme">
-    <header>
-        <nav>
-            <div class="logo">
-                <h1>Credits Zaidan - Admin</h1>
-            </div>
-            <div class="nav-links">
-                <a href="index.php">Dashboard</a>
-                <a href="transacoes.php">Transações</a>
-                <a href="usuarios.php">Usuários</a>
-                <a href="pacotes.php">Pacotes</a>
-                <a href="cupons.php">Cupons</a>
-                <a href="../index.php">Voltar ao Site</a>
-                <a href="../logout.php">Sair</a>
-            </div>
-        </nav>
-    </header>
 
     <main>
         <section class="admin-content">
@@ -264,8 +242,4 @@ $cupons = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2024 Credits Zaidan - Todos os direitos reservados</p>
-    </footer>
-</body>
-</html> 
+<?php include '../includes/admin_footer.php'; ?>

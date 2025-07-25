@@ -22,84 +22,10 @@ $stmt = $conn->query("
     LIMIT 5
 ");
 $ultimas_transacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Administrativo - Credits Zaidan</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
-        .dashboard-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .stat-card h3 {
-            margin: 0;
-            color: #4CAF50;
-        }
-        .stat-card p {
-            margin: 10px 0 0;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .ultimas-transacoes {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 8px;
-        }
-        .transacoes-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .transacoes-table th,
-        .transacoes-table td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .transacoes-table th {
-            background: rgba(0, 0, 0, 0.2);
-        }
-        .status-badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        .status-aguardando { background: #FFA000; }
-        .status-pago { background: #4CAF50; }
-        .status-cancelado { background: #f44336; }
-        .status-entregue { background: #2196F3; }
-    </style>
-</head>
-<body class="dark-theme">
-    <header>
-        <nav>
-            <div class="logo">
-                <h1>Credits Zaidan - Admin</h1>
-            </div>
-            <div class="nav-links">
-                <a href="index.php">Dashboard</a>
-                <a href="transacoes.php">Transações</a>
-                <a href="usuarios.php">Usuários</a>
-                <a href="pacotes.php">Pacotes</a>
-                <a href="cupons.php">Cupons</a>
-                <a href="../index.php">Voltar ao Site</a>
-                <a href="../logout.php">Sair</a>
-            </div>
-        </nav>
-    </header>
+$page_title = 'Painel Administrativo';
+include '../includes/admin_header.php';
+?>
 
     <main>
         <section class="admin-content">
@@ -161,8 +87,4 @@ $ultimas_transacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2024 Credits Zaidan - Todos os direitos reservados</p>
-    </footer>
-</body>
-</html> 
+<?php include '../includes/admin_footer.php'; ?>
