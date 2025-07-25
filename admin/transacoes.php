@@ -58,33 +58,10 @@ $stmt = $conn->query("
     ORDER BY t.data_transacao DESC
 ");
 $transacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar Transações - Credits Zaidan</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
-<body class="dark-theme">
-    <header>
-        <nav>
-            <div class="logo">
-                <h1>Credits Zaidan - Admin</h1>
-            </div>
-            <div class="nav-links">
-                <a href="index.php">Dashboard</a>
-                <a href="transacoes.php">Transações</a>
-                <a href="usuarios.php">Usuários</a>
-                <a href="pacotes.php">Pacotes</a>
-                <a href="cupons.php">Cupons</a>
-                <a href="../index.php">Voltar ao Site</a>
-                <a href="../logout.php">Sair</a>
-            </div>
-        </nav>
-    </header>
+$page_title = 'Gerenciar Transações';
+include '../includes/admin_header.php';
+?>
 
     <main>
         <section class="gerenciar-transacoes">
@@ -153,9 +130,7 @@ $transacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2024 Credits Zaidan - Todos os direitos reservados</p>
-    </footer>
+<?php include '../includes/admin_footer.php'; ?>
 
     <script>
     function mostrarKeys(transacaoId) {
@@ -163,5 +138,3 @@ $transacoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
         alert('Funcionalidade de visualização de keys será implementada em breve.');
     }
     </script>
-</body>
-</html> 

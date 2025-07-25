@@ -102,16 +102,11 @@ $stmt = $conn->query("
     ORDER BY u.nome
 ");
 $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar Usuários - Credits Zaidan</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
+$page_title = 'Gerenciar Usuários';
+include '../includes/admin_header.php';
+?>
+<style>
         .usuarios-table {
             width: 100%;
             border-collapse: collapse;
@@ -170,24 +165,6 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
     </style>
-</head>
-<body class="dark-theme">
-    <header>
-        <nav>
-            <div class="logo">
-                <h1>Credits Zaidan - Admin</h1>
-            </div>
-            <div class="nav-links">
-                <a href="index.php">Dashboard</a>
-                <a href="transacoes.php">Transações</a>
-                <a href="usuarios.php">Usuários</a>
-                <a href="pacotes.php">Pacotes</a>
-                <a href="cupons.php">Cupons</a>
-                <a href="../index.php">Voltar ao Site</a>
-                <a href="../logout.php">Sair</a>
-            </div>
-        </nav>
-    </header>
 
     <main>
         <section class="gerenciar-usuarios">
@@ -307,8 +284,4 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2024 Credits Zaidan - Todos os direitos reservados</p>
-    </footer>
-</body>
-</html> 
+<?php include '../includes/admin_footer.php'; ?>

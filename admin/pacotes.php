@@ -278,16 +278,11 @@ $pacotes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Atualizar todos os pacotes para não serem mais populares por padrão
 $stmt = $conn->prepare("UPDATE pacotes_wcoin SET mais_popular = 0 WHERE mais_popular IS NULL");
 $stmt->execute();
-?>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerenciar Pacotes - Credits Zaidan</title>
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
+$page_title = 'Gerenciar Pacotes';
+include '../includes/admin_header.php';
+?>
+<style>
         .admin-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -525,24 +520,6 @@ $stmt->execute();
             padding: 8px 16px;
         }
     </style>
-</head>
-<body class="dark-theme">
-    <header>
-        <nav>
-            <div class="logo">
-                <h1>Credits Zaidan</h1>
-            </div>
-            <div class="nav-links">
-                <a href="index.php">Dashboard</a>
-                <a href="transacoes.php">Transações</a>
-                <a href="usuarios.php">Usuários</a>
-                <a href="pacotes.php">Pacotes</a>
-                <a href="cupons.php">Cupons</a>
-                <a href="../index.php">Voltar ao Site</a>
-                <a href="../logout.php">Sair</a>
-            </div>
-        </nav>
-    </header>
 
     <main class="admin-container">
         <div class="admin-header">
@@ -569,14 +546,15 @@ $stmt->execute();
                     
                     <?php
                     $imagem_path = "../assets/images/produtos/{$pacote['id']}.jpg";
-                    if (file_exists($imagem_path)):
+                    $pacote_data = $pacote;
+                    if (file_exists($imagem_path)) {
+                        $pacote_data['imagem_url'] = $imagem_path;
+                        echo '<img src="' . $imagem_path . '" alt="' . htmlspecialchars($pacote['nome']) . '" class="pacote-imagem">';
+                    } else {
+                        $pacote_data['imagem_url'] = '';
+                        echo '<div class="pacote-imagem imagem-padrao">WCOIN</div>';
+                    }
                     ?>
-                        <img src="<?php echo $imagem_path; ?>" alt="<?php echo htmlspecialchars($pacote['nome']); ?>" class="pacote-imagem">
-                    <?php else: ?>
-                        <div class="pacote-imagem imagem-padrao">
-                            WCOIN
-                        </div>
-                    <?php endif; ?>
                     
                     <div class="pacote-info">
                         <h3 class="pacote-nome"><?php echo htmlspecialchars($pacote['nome']); ?></h3>
@@ -587,7 +565,7 @@ $stmt->execute();
                     </div>
                     
                     <div class="pacote-acoes">
-                        <button class="btn btn-editar" onclick="abrirModal('editar', <?php echo htmlspecialchars(json_encode($pacote)); ?>)">Editar</button>
+                        <button class="btn btn-editar" onclick='abrirModal("editar", <?php echo htmlspecialchars(json_encode($pacote_data)); ?>)'>Editar</button>
                         <button class="btn btn-excluir" onclick="confirmarExclusao(<?php echo $pacote['id']; ?>)">Excluir</button>
                     </div>
                 </div>
@@ -600,33 +578,34 @@ $stmt->execute();
         <div class="modal-content">
             <span class="close" onclick="fecharModal()">&times;</span>
             <h2 id="modal-titulo">Adicionar Pacote</h2>
-            
-            <form method="POST" enctype="multipart/form-data" id="form-pacote">
+
+            <form method="POST" enctype="multipart/form-data" id="form-pacote" class="admin-form">
                 <input type="hidden" name="acao" id="acao" value="adicionar">
                 <input type="hidden" name="id" id="pacote-id">
                 
                 <div class="form-group">
                     <label for="nome">Nome do Pacote</label>
-                    <input type="text" id="nome" name="nome" required>
+                    <input type="text" id="nome" name="nome" placeholder="Pacote" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="quantidade">Quantidade de WCOIN</label>
-                    <input type="number" id="quantidade" name="quantidade" min="1" required>
+                    <input type="number" id="quantidade" name="quantidade" placeholder="Quantidade" min="1" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="preco">Preço (R$)</label>
-                    <input type="number" id="preco" name="preco" min="0" step="0.01" required>
+                    <input type="number" id="preco" name="preco" placeholder="0.00" min="0" step="0.01" required>
                 </div>
                 
-                <div class="form-group">
+                <div class="form-group" style="grid-column: span 2;">
                     <label for="descricao">Descrição</label>
-                    <textarea id="descricao" name="descricao" required></textarea>
+                    <textarea id="descricao" name="descricao" placeholder="Descrição" required></textarea>
                 </div>
                 
-                <div class="form-group">
+                <div class="form-group" style="grid-column: span 2;">
                     <label for="imagem">Imagem do Pacote</label>
+                    <img id="preview-imagem" class="imagem-preview" alt="Prévia da imagem" />
                     <input type="file" id="imagem" name="imagem" accept="image/*">
                 </div>
                 
@@ -667,11 +646,23 @@ $stmt->execute();
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2024 Credits Zaidan - Todos os direitos reservados</p>
-    </footer>
+<?php include '../includes/admin_footer.php'; ?>
 
     <script>
+        const previewImagem = document.getElementById('preview-imagem');
+        const inputImagem = document.getElementById('imagem');
+
+        inputImagem.addEventListener('change', function(e) {
+            const [file] = e.target.files;
+            if (file) {
+                previewImagem.src = URL.createObjectURL(file);
+                previewImagem.style.display = 'block';
+            } else {
+                previewImagem.style.display = 'none';
+                previewImagem.src = '';
+            }
+        });
+
         function abrirModal(tipo, dados = null) {
             const modal = document.getElementById('modal');
             const titulo = document.getElementById('modal-titulo');
@@ -681,6 +672,8 @@ $stmt->execute();
             if (tipo === 'adicionar') {
                 titulo.textContent = 'Adicionar Pacote';
                 form.reset();
+                previewImagem.style.display = 'none';
+                previewImagem.src = '';
                 document.getElementById('acao').value = 'adicionar';
                 grupoAtivo.style.display = 'none';
             } else {
@@ -694,6 +687,13 @@ $stmt->execute();
                 document.getElementById('ativo').checked = dados.ativo == 1;
                 document.getElementById('mais_popular').checked = dados.mais_popular == 1;
                 grupoAtivo.style.display = 'block';
+                if (dados.imagem_url) {
+                    previewImagem.src = dados.imagem_url + '?' + Date.now();
+                    previewImagem.style.display = 'block';
+                } else {
+                    previewImagem.style.display = 'none';
+                    previewImagem.src = '';
+                }
             }
             
             modal.style.display = 'block';
@@ -724,5 +724,3 @@ $stmt->execute();
             }
         }
     </script>
-</body>
-</html> 
