@@ -2,15 +2,18 @@
 require_once 'config/database.php';
 require_once 'includes/functions.php';
 
+$erro = '';
+if (isset($db_error_message)) {
+    $erro = $db_error_message;
+}
+
 // Se já estiver logado, redireciona para a página inicial
 if (isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
 }
 
-$erro = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$erro) {
     $email = sanitizeInput($_POST['email']);
     $senha = $_POST['senha'];
     
