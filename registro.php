@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } catch (PDOException $e) {
             error_log('Erro no registro: ' . $e->getMessage());
-            $erro = 'Ocorreu um erro ao tentar registrar. Por favor, tente novamente.';
+            $erro = 'Erro ao registrar: ' . $e->getMessage();
         }
     }
 }
