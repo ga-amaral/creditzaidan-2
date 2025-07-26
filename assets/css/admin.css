@@ -55,12 +55,7 @@
 .status-inativo { background: #f44336; }
 .role-admin { background: #9C27B0; }
 .role-user { background: #2196F3; }
-.ban-badge {
-    background: #FF5722;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 14px;
-}
+.ban-badge { background: #FF5722; padding: 4px 8px; border-radius: 4px; font-size: 14px; }
 .dashboard-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
