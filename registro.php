@@ -22,22 +22,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($senha !== $confirmar_senha) {
         $erro = "As senhas não coincidem";
     } else {
-        // Verificar se email já existe
-        $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
-        $stmt->execute([$email]);
-        if ($stmt->rowCount() > 0) {
-            $erro = "Este email já está cadastrado";
-        } else {
-            // Inserir novo usuário
-            $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO usuarios (nome, email, senha, role) VALUES (?, ?, ?, 'user')");
-            
-            if ($stmt->execute([$nome, $email, $senha_hash])) {
+        try {
+            // Verificar se email já existe
+            $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
+            $stmt->execute([$email]);
+
+            if ($stmt->rowCount() > 0) {
+                $erro = "Este email já está cadastrado";
+            } else {
+                // Inserir novo usuário
+                $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+                $stmt = $conn->prepare("INSERT INTO usuarios (nome, email, senha, role) VALUES (?, ?, ?, 'user')");
+                $stmt->execute([$nome, $email, $senha_hash]);
+
                 header("Location: login.php?registro=sucesso");
                 exit();
-            } else {
-                $erro = "Erro ao cadastrar usuário";
             }
+        } catch (PDOException $e) {
+            error_log('Erro no registro: ' . $e->getMessage());
+            $erro = 'Ocorreu um erro ao tentar registrar. Por favor, tente novamente.';
         }
     }
 }
