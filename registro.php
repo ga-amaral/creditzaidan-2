@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$erro) {
     $email = sanitizeInput($_POST['email']);
     $senha = $_POST['senha'];
     $confirmar_senha = $_POST['confirmar_senha'];
-    
+
     // Validações
     if (empty($nome) || empty($email) || empty($senha)) {
         $erro = "Todos os campos são obrigatórios";
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$erro) {
             }
         } catch (PDOException $e) {
             error_log('Erro no registro: ' . $e->getMessage());
-            $erro = 'Erro ao registrar: ' . $e->getMessage();
+            $erro = 'Ocorreu um erro ao tentar registrar. Por favor, tente novamente.';
         }
     }
 }
@@ -84,14 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$erro) {
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .login-header {
@@ -305,7 +299,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$erro) {
             }
         }
 
-        // Adicionar animação de foco nos inputs
         document.querySelectorAll('input').forEach(input => {
             input.addEventListener('focus', function() {
                 this.parentElement.classList.add('focused');
