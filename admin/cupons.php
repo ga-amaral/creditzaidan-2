@@ -62,8 +62,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_status'])) {
     }
 }
 
-// Buscar todos os cupons
-$stmt = $conn->query("SELECT * FROM cupons ORDER BY data_criacao DESC");
+// Buscar cupons com filtro opcional
+$search = '';
+if (isset($_GET['q'])) {
+    $search = sanitizeInput($_GET['q']);
+}
+
+if ($search !== '') {
+    $stmt = $conn->prepare("SELECT * FROM cupons WHERE codigo LIKE ? ORDER BY data_criacao DESC");
+    $stmt->execute(['%' . $search . '%']);
+} else {
+    $stmt = $conn->query("SELECT * FROM cupons ORDER BY data_criacao DESC");
+}
 $cupons = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $page_title = 'Gerenciar Cupons';
@@ -113,6 +123,41 @@ include '../includes/admin_header.php';
         .btn-toggle.desativar {
             background: #f44336;
             color: white;
+        }
+
+        .cupons-busca {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .cupons-busca input[type="text"] {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        .cupons-busca button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            background: #2196F3;
+            color: #fff;
+            cursor: pointer;
+        }
+        .cupons-busca button:hover {
+            opacity: 0.9;
+        }
+
+        .uso-progress {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            height: 10px;
+            margin-bottom: 4px;
+            overflow: hidden;
+        }
+        .uso-bar {
+            background: #4CAF50;
+            height: 100%;
         }
     </style>
 </head>
@@ -174,6 +219,12 @@ include '../includes/admin_header.php';
             
             <div class="cupons-lista">
                 <h3>Cupons Cadastrados</h3>
+                <div class="cupons-busca">
+                    <form method="GET" action="">
+                        <input type="text" name="q" placeholder="Buscar código" value="<?php echo htmlspecialchars($search); ?>">
+                        <button type="submit">Buscar</button>
+                    </form>
+                </div>
                 
                 <?php if (empty($cupons)): ?>
                     <p>Nenhum cupom cadastrado.</p>
@@ -195,7 +246,19 @@ include '../includes/admin_header.php';
                                     <td><?php echo $cupom['codigo']; ?></td>
                                     <td><?php echo $cupom['desconto']; ?>%</td>
                                     <td><?php echo date('d/m/Y', strtotime($cupom['validade'])); ?></td>
-                                    <td><?php echo $cupom['usos_atual']; ?>/<?php echo $cupom['usos_maximos']; ?></td>
+                                    <td>
+                                        <?php
+                                            $percent = 0;
+                                            if ($cupom['usos_maximos'] > 0) {
+                                                $percent = ($cupom['usos_atual'] / $cupom['usos_maximos']) * 100;
+                                                if ($percent > 100) { $percent = 100; }
+                                            }
+                                        ?>
+                                        <div class="uso-progress">
+                                            <div class="uso-bar" style="width: <?php echo $percent; ?>%"></div>
+                                        </div>
+                                        <?php echo $cupom['usos_atual']; ?>/<?php echo $cupom['usos_maximos']; ?>
+                                    </td>
                                     <td>
                                         <span class="<?php echo $cupom['ativo'] ? 'status-ativo' : 'status-inativo'; ?>">
                                             <?php echo $cupom['ativo'] ? 'Ativo' : 'Inativo'; ?>
